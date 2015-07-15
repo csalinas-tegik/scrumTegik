@@ -1,0 +1,14 @@
+<h1>Horas reportadas</h1>
+
+<%=
+options = { extra_day_classes: lambda { |classes, date|
+  #classes << 'cal-day-daylight' if (5 == date.day)  
+  #classes << 'cal-day-night' if (10 == date.day)
+  }
+}
+bootstrap_calendar Date.today, options do |date|
+  content_tag :span, class: "pull-right", "data-cal-date" => "some", "data-cal-view" => "day" do
+    link_to date.day.to_s, vistaDiaria_path(:day=> date)
+  end
+end
+%>

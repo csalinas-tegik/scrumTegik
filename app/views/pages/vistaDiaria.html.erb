@@ -1,0 +1,78 @@
+<div class="container">
+		<h1>Reporte Hacker</h1>
+	<table class="table table-condensed">
+			<tr>
+			<%dateURL = Date.strptime(params[:day],"%Y-%m-%d") %>
+			<% @hackers = Hacker.where("datefrom <= ? ", dateURL).where("dateto >= ?", dateURL) %>
+		    <% @hackers.each do |hacker| %>
+	        		<td>
+	        			<%= hacker.name %>
+	        			<br>
+	        			<div class="dropdown">
+	        			<select class="form-control bpList<%= hacker.id %>">
+	        				<option value="">Cliente:</option>
+	        				<% @bps = BusinessPartner.all%>
+	        				<% @bps.each do |bp| %>
+	        					<option value="<%=bp.id%>"><%=bp.name%></option>
+
+	        				<% end %>
+	        			</select>
+	        			<br>
+	        			<select class="form-control projectList<%= hacker.id %>">
+	        				<option value="">Proyecto:</option>
+	        			</select>
+	        			<br>
+	        			<select class="form-control sprintList<%= hacker.id %>" id="SprintList">
+	        				<option value="">Horas:</option>
+	        			</select>
+
+	        			<div class="dropdown">
+	        			<br>
+			        	<button name="button" type="button" class="btn btn-default btnRegistrar<%= hacker.id %>"><strong>Registrar horas!</strong></button>
+			        	<br>
+				    	<% @works = Work.where(date: dateURL) %>
+				    	<% @works.each do |work| %>
+				        	<tr><td><%= work.sprint.name %></td><td><%= work.time %></td></tr>
+				    	<% end %>
+	    			</td>
+		    <% end %>
+		    </tr>
+	</table>
+<div/>
+<script type="text/javascript">
+	$( document ).ready(function() 
+		{
+			<% @hackers.each do |hacker| %>
+				$(document).on('change', '.bpList<%= hacker.id %>', function (e) {
+				console.log("ATASCADO 2 + <%= hacker.id %> + " + $(this).val());
+				var bp = $(this).val();
+				var urlToCall = 'api/v1/projectbybps/?bpid='+bp;
+				console.log("URLTOCALL + " + urlToCall);
+				$.ajax({
+	                type: "GET",
+	                url: urlToCall,
+	                dataType: 'json',
+	                success: function(json) {
+	                    var $el = $(".projectList<%= hacker.id %>");
+	                    $el.empty(); // remove old options
+	                    $el.append($("<option></option>")
+	                            .attr("value", '').text('Proyecto:'));
+	                    $.each(json, function(value, key) {
+	                    	console.log(value);
+	                    	console.log(key);
+	                        $el.append($("<option></option>")
+	                                .attr("value", key.id).text(key.name));
+	                    });														
+		                
+
+	                    
+	                    
+	                }
+            	});
+				});
+			<% end %>
+			
+			
+		}
+	);
+</script>

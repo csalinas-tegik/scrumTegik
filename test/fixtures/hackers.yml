@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: 
+  datefrom: 2015-07-13 16:00:36
+  dateto: 2015-07-13 16:00:36
+
+two:
+  name: 
+  datefrom: 2015-07-13 16:00:36
+  dateto: 2015-07-13 16:00:36
