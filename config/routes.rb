@@ -11,6 +11,10 @@ Rails.application.routes.draw do
 
   resources :projectbybps
 
+  resources :sprintbyprojects
+
+
+
   root "pages#home"
   get "vistaDiaria" => "pages#vistaDiaria"
 
@@ -72,6 +76,8 @@ Rails.application.routes.draw do
 namespace :api, defaults: {format: 'json'} do
    namespace :v1 do
      resources :projectbybps, only: [:index]
+     resources :sprintbyprojects, only: [:index]
+     resources :works, only: [:create]
    end
  end
 
