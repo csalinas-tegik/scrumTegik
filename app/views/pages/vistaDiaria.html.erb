@@ -33,7 +33,7 @@
 			        	<br>
 			        	<br>
 			        	<table class="table table-condensed">
-				    	<% @works = Work.where("hacker_id = ? ", hacker.id) %>
+				    	<% @works = Work.where("hacker_id = ? ", hacker.id)%>
 				    	<% @works.each do |work| %>
 				        	<tr>
 				        	<td><%= work.sprint.name %></td><td><%= work.time %></td>
