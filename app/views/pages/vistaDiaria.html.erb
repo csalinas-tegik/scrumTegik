@@ -3,10 +3,29 @@
 	<table class="table table-condensed">
 			<tr>
 			<%dateURL = Date.strptime(params[:day],"%Y-%m-%d") %>
+			<%dateURLTime = DateTime.strptime(params[:day]+'T00:00:00','%Y-%m-%dT%H:%M:%S')%>
 			<% @hackers = Hacker.where("datefrom <= ? ", dateURL).where("dateto >= ?", dateURL) %>
 		    <% @hackers.each do |hacker| %>
 	        		<td>
 	        			<%= hacker.name %>
+	        						        	<%strLunes = dateURLTime.beginning_of_week.strftime('%Y-%m-%dT%H:%M:%S')%>
+			        	<%fechaLunes = DateTime.strptime(strLunes,'%Y-%m-%dT%H:%M:%S')%>
+			        	<%puts fechaLunes%>
+			        	<%for i in 0..4%>
+   							<%puts "Value of local variable is #{i}"%>
+   							<% @semana = Work.where("hacker_id = ? and date = ?", hacker.id, fechaLunes + i.days).select(:date, "SUM(time) as acum_time").group(:date).collect{ |diasemana| [diasemana.date, diasemana.acum_time] }%>
+   							<% suma = Work.where("hacker_id = ? and date = ?", hacker.id, fechaLunes + i.days).sum(:time)%>
+   							<%puts "La suma es: " + suma.to_s %>
+   							<% if 1 == 1 %>
+   							<table class="table table-condensed">
+   							<% if suma == 8 %>
+								<td><font color="#04B404"><strong><%= i+1 %></strong></font></td><td><font color="#04B404"><strong><%= suma.to_s %></strong></font></td>
+							<% else %>
+				        		<td><font color="#B40431"><strong><%= i+1 %></strong></font></td><td><font color="#B40431"><strong><%= suma.to_s %></strong></font></td>
+			        		<% end %>
+			        		</table>
+			        		<% end %>
+						<%end%>
 	        			<br>
 	        			<div class="dropdown">
 	        			<select id="bpList<%= hacker.id %>" class="form-control bpList<%= hacker.id %>">
@@ -33,12 +52,24 @@
 			        	<br>
 			        	<br>
 			        	<table class="table table-condensed">
-				    	<% @works = Work.where("hacker_id = ? ", hacker.id)%>
+			        	
+			        	<%puts dateURLTime%>
+				    	<% @works = Work.where("hacker_id = ? and date = ? ", hacker.id, dateURLTime)%>
+				    	<% @sumaDiaria = 0%>
 				    	<% @works.each do |work| %>
+				    		<% @sumaDiaria = @sumaDiaria + work.time%>
 				        	<tr>
 				        	<td><%= work.sprint.name %></td><td><%= work.time %></td>
 				        	</tr>
+
 				    	<% end %>
+				    	<tr>
+				    		<% if @sumaDiaria == 8 %>
+				        		<td><font color="#04B404"><strong>Total</strong></font></td><td><font color="#04B404"><strong><%= @sumaDiaria %></strong></font></td>
+				        	<% else %>
+				        		<td><font color="#B40431"><strong>Total</strong></font></td><td><font color="#B40431"><strong><%= @sumaDiaria %></strong></font></td>
+			        		<% end %>
+			        	</tr>
 				    	</table>
 	    			</td>
 		    <% end %>
